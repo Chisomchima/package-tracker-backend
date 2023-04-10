@@ -27,34 +27,35 @@ const updatePackage = async (req, res) => {
 
 const createPackage = async (req, res) => {
   try {
-    const {
-      active_delivery_id,
-      description,
-      weight,
-      width,
-      depth,
-      height,
-      from_name,
-      from_address,
-      to_name,
-      to_address,
-      from_location,
-      to_location,
-    } = req.body;
-    // create a new package with request body
-    const newPackage = await Package.create({ ...req.body });
-    await newPackage.save();
-    // find the associated delivery by ID
-    const delivery = await Delivery.findByIdAndUpdate(
-      active_delivery_id,
-      { package_id: newPackage._id },
-      { new: true }
-    );
-    // update the active_delivery_id field in the associated delivery
-    await delivery.save();
+    const description = req.body.description;
+    const weight = req.body.weight;
+    const width = req.body.width;
+    const depth = req.body.depth;
+    const height = req.body.height;
+    const fromName = req.body.from_name;
+    const fromAddress = req.body.from_address;
+    const toName = req.body.to_name;
+    const toAddress = req.body.to_address;
+    const fromLocation = req.body.from_location;
+    const toLocation = req.body.to_location;
 
-    // return the new package as response
-    res.status(201).json({ package: newPackage, delivery: delivery });
+    const package = new Package({
+      description: description,
+      weight: weight,
+      width: width,
+      depth: depth,
+      height: height,
+      from_name: fromName,
+      from_address: fromAddress,
+      to_name: toName,
+      to_address: toAddress,
+      from_location: fromLocation,
+      to_location: toLocation
+    });
+
+    await package.save();
+
+    res.status(201).json(package);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });

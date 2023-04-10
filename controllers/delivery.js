@@ -15,6 +15,17 @@ const createDelivery = async (req, res) => {
     // Extract necessary fields from req.body
     const { package_id,  pickup_time, start_time, end_time, location, status } = req.body;
 
+    // Check if the package ID is a valid MongoDB object ID
+    if (!mongoose.Types.ObjectId.isValid(package_id)) {
+      return res.status(400).json({ message: 'Invalid package ID' });
+    }
+
+     // Check if the corresponding package exists in the database
+     const package = await Package.findById(packageId);
+     if (!package) {
+       return res.status(404).json({ message: 'Package not found' });
+     }
+
     // Create a new delivery object
     const delivery = new Delivery({
      ...req.body
@@ -23,11 +34,14 @@ const createDelivery = async (req, res) => {
     // Save the new delivery object
     await delivery.save();
 
-    // Update the corresponding package with the new delivery
-    const package = await Package.findByIdAndUpdate(package_id, { active_delivery_id: delivery._id }, { new: true });
+   // Update the active_delivery_id field in the package
+   package.active_delivery_id = delivery._id;
+   await package.save();
+
 
     // Return the newly created delivery and the updated package
     res.status(201).json({ delivery: delivery, package: package });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
