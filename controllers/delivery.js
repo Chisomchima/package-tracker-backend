@@ -1,5 +1,6 @@
 const Delivery = require('../models/Delivery')
 const Package = require('../models/Package')
+const mongoose  = require('mongoose');
 
 const getDeliveries =  async (req, res) => {
     try {
@@ -21,7 +22,7 @@ const createDelivery = async (req, res) => {
     }
 
      // Check if the corresponding package exists in the database
-     const package = await Package.findById(packageId);
+     const package = await Package.findById(package_id);
      if (!package) {
        return res.status(404).json({ message: 'Package not found' });
      }
