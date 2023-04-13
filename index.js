@@ -30,7 +30,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "https://package-tracker-frontend.vercel.app/",
     methods: ["GET", "POST"],
   },
 });
@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
       { new: true },
     )
       .then((updatedDelivery) => {
-        //Broadcast the delivery update
+        //Broadcast the Loacation update
         console.log(updatedDelivery, "updatedDelivery");
         socket.broadcast.emit("location_updated", updatedDelivery);
       })
