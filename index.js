@@ -30,7 +30,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "https://package-tracker-frontend.vercel.app/*",
+    origin: "https://package-tracker-frontend.vercel.app",
     methods: ["GET", "POST"],
   },
 });
